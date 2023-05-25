@@ -1,30 +1,47 @@
-﻿namespace Balkezesek
+﻿using System.Text;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
+
+namespace Balkezesek
 {
     internal class Program
     {
-        static List<BalkezesekOsztály> lista = new List<BalkezesekOsztály>();
+
         static void Main(string[] args)
         {
-            Olvasas();
-            HarmasFeladat();
-        }
+            List<BalkezesekOsztály> balkezesekLista = new List<BalkezesekOsztály>();
 
-        static void Olvasas()
-        {
-            StreamReader szoveg = new StreamReader("balkezesek.csv");
-            lista.Skip(1);
-            while (!szoveg.EndOfStream)
+            StreamReader sr = new StreamReader("balkezesek.csv");
+            sr.ReadLine();
+            while (!sr.EndOfStream)
             {
-                string[] player = szoveg.ReadLine().Split(";");
-                
+                string[] szoveg = sr.ReadLine().Split(";");
+                balkezesekLista.Add(new BalkezesekOsztály(szoveg[0], Convert.ToDateTime(szoveg[1]), Convert.ToDateTime(szoveg[2]), Convert.ToInt32(szoveg[3]), Convert.ToInt32(szoveg[4])));
             }
 
-            szoveg.Close();
-        }
-        static void HarmasFeladat()
-        {
+            Console.WriteLine($"3. feladat: {balkezesekLista.Count}");
 
-            Console.WriteLine(lista.Count);
+            Console.WriteLine("4. feladat:");
+            foreach (BalkezesekOsztály adat in balkezesekLista)
+            {
+                if (adat.UtolsoPalyaraLepes.Year == 1999 && adat.UtolsoPalyaraLepes.Month == 10)
+                {
+                    Console.WriteLine($"\t{adat.Nev},{Math.Round(adat.Magassag * 2.54, 1)}cm");
+                }
+            }
+
+            Console.Write("Kérek egy 1990 és 1999 közötti évszámot!: ");
+            int bekert = Convert.ToInt32(Console.ReadLine());
+            while (!(bekert >= 1990 && bekert <= 1999))
+            {
+                Console.Write("Hibás adat! Kérek egy 1990 és 1999 közötti évszámot!: ");
+                bekert = Convert.ToInt32(Console.ReadLine());
+
+            }
         }
     }
 }
